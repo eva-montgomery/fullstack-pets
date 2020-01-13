@@ -8,7 +8,7 @@ create table owners(
    -- pet_id integer references pets (id) :(
 
 );
--- what do we want to know about pets?
+-- what do we want to know about pets? 
 create table pets(
     id serial primary key,
     name text,
