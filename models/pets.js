@@ -32,8 +32,6 @@ async function one(id) {
 //         });
 
 
-
-
 async function all() {
     const allPets = await db.query(`select * from pets;`)
         .then(data => {
@@ -49,19 +47,56 @@ async function all() {
 };
 
 // Update
-function update() {
+async function updateName(id, name) {
+    const result = await db.result(`
+        update pets set
+            name=$1
+        where id=$2; 
+    `, [name, id]);
+    if (result.rowCount === 1) {
+        return id;
+    } else {
+        return null;
+    }
+};
 
+async function updateBirthdate(id, dataObject) {
+    // Postgres wants this: '2020-01-13'
+
+    const year = dataObject.getFullYear(); // YYYY
+    let month = dataObject.getMonth() + 1; // MM
+    if (month < 10) {
+        month = `0${month}`;
+    }
+    let day = dataObject.getDate(); // DD
+    if (day < 10) {
+        day = `0${day}`;
+    }
+    const dateString = `${year}-${month}-${day}`;
+    const result = await db.result(`
+        update pets set
+            birthdate=$1
+        where id=$2
+    `, [dateString, id]);
+    return result;
 };
 
 // Delete
-function del() {
-
+async function del(id) {
+    const result = await db.result(`delete from pets where id=$1`, [id]);
+    console.log(result);
+    if (result.rowCount === 1) {
+        return id;
+    } else {
+        return null;
+    }
 };
 
 module.exports = {
     create,
     one,
     all,
-    update,
+    updateName,
+    updateBirthdate,
     del
 };
