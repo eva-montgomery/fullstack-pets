@@ -14,7 +14,7 @@ npm init -y
 createdb fullstack-pets
 touch schema.sql
 touch seed.sql
-````
+```
 
 ### Put stuff in `schema.sql` and in `seed.sql`
 
