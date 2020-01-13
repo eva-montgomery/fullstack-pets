@@ -7,9 +7,9 @@ insert into pets
     (name, species, birthdate, owner_id)
 values 
     ($1, $2, $3, $4)
-    
+
     `, [name, species, birthdate, owner_id]);
-    return result;
+    return result.rowCount;
 };
 
 // Retrieve

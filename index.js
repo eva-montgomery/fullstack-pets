@@ -1,31 +1,58 @@
+const http = require('http');
+const express = require('express');
+
+const app = express();
+const PORT = 3000;
+
+const server = http.createServer(app);
+
 const pets = require('./models/pets');
 
-// pets.all()
-//     .then(allThePets => {
-//         // do stuff
-//         console.log()
-//     })
-    
 
-async function main() {
-    // const thePets = await pets.all();
-    // console.log(thePets);
+// see all pets
+app.get('/pets', async (req, res) => {
+    const thePets = await pets.all();
+    // res.send('you want /pets');
+    res.json(thePets);
+});
 
-    // const aPet = await pets.one(1);
-    // console.log(aPet)
+app.get('/pets/:id', async (req, res) => {
+    //console.log(req.params);
+    const petByID = await pets.one(req.params.id);
+    console.log(petByID);
+    res.json(petByID);
+});
 
-    // const result = await pets.del(1);
-    // console.log(result);
+// Create
+app.get('/pets/create/:name/:species/:birthdate/:owner_id', async (req, res) => {
+    console.log(req.params);
+    const createPet = await pets.create(req.params.name, req.params.species, req.params.birthdate, req.params.owner_id);
+    if (createPet === 1) {
+        res.send('You added a new pet');
+    } else {
+        res.send('no pet created')
+    }
+});
 
-    // const updateResult = await pets.updateName(1, 'the amazing oakley');
-    // console.log(updateResult);
+app.post('/pets/create')
 
-    // const updateResult = await pets.updateBirthdate(1, new Date());
-    // console.log(updateResult);
+// Update
+app.get('/pets/edit/:id/:name', async (req, res) => {
+    console.log(req.params);
+    const updateResult = await pets.updateName(req.params);
+    res.json(updateResult);
+});
+app.post('/pets/edit')
 
-    const createResult = await pets.create('billy', 'goat', '2020-01-13', 1);
-    console.log(createResult);
-};
+//Delete
+app.get('/pets/:id/delete', async (req, res) => {
+    const deletePetbyID = await pets.del((req.params.id));
+    res.json(deletePetbyID);
+});
 
-main();
 
+app.post('/pets/:id/delete')
+
+server.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});
